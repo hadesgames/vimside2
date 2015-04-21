@@ -1,0 +1,3 @@
+[submodule "third_party/sexpdata"]
+	path = third_party/sexpdata
+	url = git@github.com:hadesgames/sexpdata.git
