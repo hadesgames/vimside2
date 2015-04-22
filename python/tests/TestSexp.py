@@ -21,3 +21,11 @@ class TestSexp(unittest.TestCase):
         data = sexp.loads('(:return () 4)')
         self.assertListEqual(data, [Symbol(":return"), [], 4])
 
+    def test_does_not_dictify_non_symbol_keys(self):
+        data = sexp.loads('(:a "b" "c" "d")')
+        self.assertListEqual(data, [Symbol(":a"), "b", "c", "d"])
+
+    def test_does_not_dictify_non_column_keys(self):
+        data = sexp.loads('(:a "b" c "d")')
+        self.assertListEqual(data, [Symbol(":a"), "b", Symbol("c"), "d"])
+
