@@ -9,6 +9,9 @@ def _dictify(sexp):
     if len(sexp) % 2 != 0:
         return sexp
 
+    if len(sexp) == 0:
+        return sexp
+
     symbol_keys = True
     for key in sexp[::2]:
         if type(key) != sexpdata.Symbol or not key.value().startswith(":"):
