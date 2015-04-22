@@ -57,4 +57,6 @@ docs/_build/
 target/
 
 # Project Specific
-data/
+data/classpath
+project/target/
+.ensime

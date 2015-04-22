@@ -1,7 +1,6 @@
 import logging
 import sexp
 import os
-import vim
 import tempfile
 import subprocess
 import time
@@ -19,9 +18,8 @@ class NoEnsimeConf(Exception):
 class SbtError(Exception):
     pass
 
-def _FindEnsimeConf():
+def _FindEnsimeConf(_dir):
     file_name = ".ensime"
-    _dir = vim.eval("getcwd()")
     while _dir != "/":
         conf = os.path.join(_dir, file_name)
         logger.debug("Checking %s", conf)
@@ -108,7 +106,7 @@ def StartEnsime(env):
         print("Vimside already running")
         return
 
-    ensime_conf = _FindEnsimeConf()
+    ensime_conf = _FindEnsimeConf(env.cwd)
     _LoadEnsimeConf(env, ensime_conf)
 
     _StartEnsime(env, ensime_conf)

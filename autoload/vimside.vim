@@ -12,8 +12,9 @@ function! s:SetUpPython()
   exe 'python sys.path.insert(0, "' . s:script_folder_path . '/../python" )'
   exe 'python sys.path.insert(0, "' . s:script_folder_path . '/../third_party" )'
 
-  py 'import vimside.env'
-  py 'import vimside.command'
+  py import vimside.env
+  py import vimside.command
+  exe 'python vimside.env.getEnv().cwd="' . getcwd() . '"'
 endfunction
 
 
