@@ -8,6 +8,8 @@ python:
 java:
   - "1.8"
 
+cache: true
+
 before_install:
   - echo "deb http://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
   - apt-get update
