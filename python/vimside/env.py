@@ -1,4 +1,3 @@
-import vim
 from vimside import rpc
 class VimsideEnv(object):
     def __init__(self):
