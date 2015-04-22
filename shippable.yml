@@ -1,0 +1,17 @@
+build_image: shippableimages/ubuntu1404_python
+
+language: python
+
+python:
+  - "2.7"
+
+java:
+  - "1.8"
+
+before_install:
+  - apt-get install sbt
+  - pip install tox
+
+script:
+  - cd python
+  - tox
