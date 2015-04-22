@@ -60,3 +60,4 @@ target/
 data/classpath
 project/target/
 .ensime
+python/coverage

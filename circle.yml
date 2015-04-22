@@ -1,0 +1,36 @@
+machine:
+  #scala:
+    #version: 0.13.0
+  python:
+    version: 2.7.6
+  java:
+    version: openjdk7
+
+dependencies:
+  pre:
+    - wget -q https://dl.bintray.com/sbt/debian/sbt-0.13.7.deb
+    - sudo dpkg -i sbt-0.13.7.deb
+    - ls -al $HOME/$CIRCLE_PROJECT_REPONAME
+    - cd $HOME/$CIRCLE_PROJECT_REPONAME/python/tests/resources/projects/hello/ && sbt gen-ensime
+    - rm $HOME/$CIRCLE_PROJECT_REPONAME/python/tests/resources/projects/hello/.ensime
+
+  cache_directories:
+    - "~/.ivy2"
+    - "~/.sbt"
+
+  post:
+    - pip install coverage
+    - pip install python-coveralls
+    - pip install tox
+
+test:
+  override:
+    - tox -c python/tox.ini
+  post:
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+    - cp python/nosetests.xml $CIRCLE_TEST_REPORTS/junit/ 
+    - cp python/coverage.xml $CIRCLE_ARTIFACTS/
+    - cp -r python/coverage $CIRCLE_ARTIFACTS/coverage
+    - coveralls --base_dir . -d python/.coverage -c python/.coveragerc 
+
+
