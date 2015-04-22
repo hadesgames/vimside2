@@ -46,7 +46,7 @@ class TestEnsimeStartStop(unittest.TestCase):
 
         env.connection.send(vimside.rpc.connection_info(), handler)
 
-        time.sleep(1)
+        time.sleep(3)
         self.assertTrue(self._ack)
 
         vimside.command.StopEnsime(env)
