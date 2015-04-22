@@ -1,12 +1,12 @@
 build_image: shippableimages/ubuntu1404_python
 
-language: python
+language: python java
 
 python:
   - "2.7"
 
-java:
-  - "1.8"
+jdk:
+  - openjdk8
 
 cache: true
 
