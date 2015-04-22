@@ -10,7 +10,7 @@ from vimside.rpc.SwankConnection import SwankConnection
 
 
 logger = logging.getLogger("vimside-server-command")
-VIMSIDE_ROOT = "/home/hadesgames/.janus/vimside2"
+VIMSIDE_ROOT = os.path.join(os.path.dirname(__file__), "..", "..") 
 
 class NoEnsimeConf(Exception):
     pass
