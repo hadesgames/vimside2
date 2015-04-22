@@ -29,7 +29,8 @@ def loads(s, **kwargs):
 
     return _dictify(data)
 
-
+def load(s, **kwargs):
+    return _dictify(sexpdata.load(s, **kwargs))
 
 def dumps(obj, **kwargs):
     return sexpdata.dumps(obj, **kwargs)

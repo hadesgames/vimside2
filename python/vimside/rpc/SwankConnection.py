@@ -7,6 +7,8 @@ import vimside.sexp
 import logging
 import abc
 
+logging.basicConfig(filename='/tmp/VIMSIDE_LOG', level=logging.DEBUG)
+
 logger = logging.getLogger("swank-connection")
 
 class BaseSwankConnection(object):
@@ -125,11 +127,11 @@ class ResponseHandler(Handler):
 
     def can_handle(self, msg):
         if not type(msg) == list or len(msg) == 0:
-            logger.debug("Response Handler - ignoring  message: %s", msg)
+            logger.debug("Response Handler - check 1- ignoring  message: %s", msg)
             return False
 
-        if type(msg[0]) != sexpdata.Symbol or msg[0].value() != "return":
-            logger.debug("Response Handler - ignoring  message: %s", msg)
+        if type(msg[0]) != sexpdata.Symbol or msg[0].value() != ":return":
+            logger.debug("Response Handler 2 - check 2 - ignoring message: %s", msg)
             return False
 
         if msg[2] not in self._handlers:
