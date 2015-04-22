@@ -61,3 +61,4 @@ data/classpath
 project/target/
 .ensime
 python/coverage
+.ensime_cache

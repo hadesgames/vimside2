@@ -100,6 +100,10 @@ def _SetupConnection(env):
     socket = _SetupSocket(port)
     env.set_connection(SwankConnection(socket))
 
+def _CreateCacheDir(env):
+    if not os.path.exists(env.conf["cache-dir"]):
+        os.mkdir(env.conf["cache-dir"])
+
 
 def StartEnsime(env):
     if env.connection is not None:
@@ -108,6 +112,7 @@ def StartEnsime(env):
 
     ensime_conf = _FindEnsimeConf(env.cwd)
     _LoadEnsimeConf(env, ensime_conf)
+    _CreateCacheDir(env)
 
     _StartEnsime(env, ensime_conf)
 

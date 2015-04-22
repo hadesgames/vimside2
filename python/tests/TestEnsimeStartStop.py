@@ -1,6 +1,9 @@
 import unittest
 import os
 import vimside.command
+import vimside.env
+import tempfile
+import time
 
 class TestEnsimeStartStop(unittest.TestCase):
     @classmethod
@@ -23,6 +26,34 @@ class TestEnsimeStartStop(unittest.TestCase):
         p = vimside.command._FindEnsimeConf(os.path.join(
             self._hello_dir, "src", "main", "scala"))
         self.assertEquals(p, self._hello_ensime)
+
+
+    def test_ensime_can_create_classpath(self):
+        (_, filename) = tempfile.mkstemp()
+        vimside.command._CreateClassPath(filename, "2.11.6", "0.9.10-SNAPSHOT")
+
+        self.assertTrue(os.path.exists(filename))
+        self.assertGreater(os.path.getsize(filename), 0)
+
+    def test_ensime_start_stop(self):
+        self._ack = False
+        def handler(msg):
+            self._ack = True
+
+        env = vimside.env.getEnv()
+        env.cwd = self._hello_dir
+        vimside.command.StartEnsime(env)
+
+        env.connection.send(vimside.rpc.connection_info(), handler)
+
+        time.sleep(0.3)
+        self.assertTrue(self._ack)
+
+        vimside.command.StopEnsime(env)
+
+
+
+
 
 
 
