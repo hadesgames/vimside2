@@ -11,7 +11,7 @@ java:
 before_install:
   - echo "deb http://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
   - apt-get update
-  - apt-get install -y sbt
+  - apt-get install -y --force-yes sbt
   - pip install tox
 
 script:
