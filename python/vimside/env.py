@@ -1,9 +1,12 @@
+import vimside 
+import vimside.completions
 from vimside import rpc
 class VimsideEnv(object):
     def __init__(self):
         self.connection = None
         self.conf = {}
         self.ensime_process = None
+        self.completions = vimside.completions.Completer(self)
 
     def handle_connection_info(self, msg):
         msg = msg['ok']
