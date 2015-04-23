@@ -5,8 +5,11 @@ import tempfile
 import subprocess
 import time
 import socket
+import concurrent.futures
+import vimside.rpc
 
 from vimside.rpc.SwankConnection import SwankConnection
+
 
 
 logger = logging.getLogger("vimside-server-command")
@@ -122,5 +125,8 @@ def StartEnsime(env):
 
 
 def StopEnsime(env):
-    env.ensime_process.terminate()
+    try:
+        env.connection.responseFuture(vimside.rpc.shutdown_server()).result(5)
+    except concurrent.futures.TimeoutError:
+        env.ensime_process.kill()
 

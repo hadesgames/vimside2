@@ -36,18 +36,12 @@ class TestEnsimeStartStop(unittest.TestCase):
         self.assertGreater(os.path.getsize(filename), 0)
 
     def test_ensime_start_stop(self):
-        self._ack = False
-        def handler(msg):
-            self._ack = True
-
         env = vimside.env.getEnv()
         env.cwd = self._hello_dir
         vimside.command.StartEnsime(env)
 
-        env.connection.send(vimside.rpc.connection_info(), handler)
-
-        time.sleep(3)
-        self.assertTrue(self._ack)
+        ft = env.connection.responseFuture(vimside.rpc.connection_info())
+        print(ft.result(5))
 
         vimside.command.StopEnsime(env)
 

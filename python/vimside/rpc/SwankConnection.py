@@ -5,7 +5,7 @@ import threading
 import sexpdata
 import vimside.sexp
 import logging
-import abc
+import concurrent.futures
 
 logging.basicConfig(filename='/tmp/VIMSIDE_LOG', level=logging.DEBUG)
 
@@ -31,11 +31,18 @@ class BaseSwankConnection(object):
     def __del__(self):
         self._socket.close()
 
-    def send(self, req):
+    def get_id(self):
         with self._id_lock:
-            self._id += 1
-            self._outgoing.put((req, self._id))
+            self._id +=1
             return self._id
+
+    def send(self, req, _id = None):
+        if _id is None:
+            _id = self.get_id()
+
+        self._outgoing.put((req, _id))
+
+        return _id
 
     def _send_loop(self):
         while True:
@@ -92,9 +99,22 @@ class SwankConnection(BaseSwankConnection):
                 ResponseHandler(self._response_handlers),
                 EventHandler()]
 
+    def responseFuture(self, req):
+        ft = concurrent.futures.Future()
+
+        def _handle(msg):
+            if ft.set_running_or_notify_cancel():
+                ft.set_result(msg)
+
+        self.send(req, _handle)
+        return ft
+
+
     def send(self, req, handler):
-        _id = super(SwankConnection, self).send(req)
+        _id = self.get_id()
         self._response_handlers[_id] = handler
+
+        super(SwankConnection, self).send(req, _id)
 
 
     def _handle_incomming_msg(self, msg):

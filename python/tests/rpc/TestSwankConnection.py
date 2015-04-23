@@ -41,43 +41,25 @@ class TestSwankConnection(unittest.TestCase):
         self._conn._receive_incomming_msg()
 
     def test_handlers(self):
-        self._called = False
-
-        def testResponse(resp):
-            self._called = True
-            self.assertEquals(type(resp), dict)
-            self.assertTrue("ok" in resp)
-            self.assertEquals(resp["ok"]["version"], "0.0.1")
-
         # Send Request
         req = [sexpdata.Symbol("swank:connection-info")]
-        self._conn.send(req, testResponse)
+        ft = self._conn.responseFuture(req)
         self._conn._send_next_msg()
 
         # Send Response
         self._socket._data = '000055(:return (:ok (:pid nil :server-implementation (:name "ENSIME") :version "0.0.1")) 1)'
         self._conn._receive_incomming_msg()
 
-        self.assertTrue(self._called)
+        resp = ft.result(1)
+        self.assertEquals(type(resp), dict)
+        self.assertTrue("ok" in resp)
+        self.assertEquals(resp["ok"]["version"], "0.0.1")
+
+
+
 
     def test_handles_events(self):
         self._socket._data = '000011(:compiler-ready)'
         self._conn._receive_incomming_msg()
-
-    #def test_handlers_again(self):
-        #self._called = False
-
-        #def testResponse(resp):
-            #self._called = True
-            #self.assertEquals(type(resp), dict)
-            #self.assertTrue("ok" in resp)
-            #self.assertEquals(resp["ok"]["version"], "0.0.1")
-
-        #from sexpdata import Symbol
-        #data = [Symbol(':return'), {'ok': {'implementation': {'name': 'ENSIME'}, 'version': '0.8.14', 'pid': []}}, 1]
-
-        #self._conn._response_handlers[1] = testResponse
-        #self._conn._handle_incomming_msg(data)
-        #self.assertTrue(self._called)
 
 
