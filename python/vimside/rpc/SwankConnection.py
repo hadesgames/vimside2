@@ -79,7 +79,7 @@ class BaseSwankConnection(object):
 
 
     def _handle_incomming_msg(self, msg):
-        raise NotImplemented
+        raise NotImplementedError
 
 
 
@@ -109,9 +109,9 @@ class SwankConnection(BaseSwankConnection):
 
 class Handler(object):
     def can_handle(self, msg):
-        raise NotImplemented
+        raise NotImplementedError
     def handle(self, msg):
-        raise NotImplemented
+        raise NotImplementedError
 
 class EventHandler(Handler):
     def can_handle(self, msg):
@@ -140,20 +140,7 @@ class ResponseHandler(Handler):
         return True
 
     def handle(self, msg):
-        logger.info("ResponseHandler - got %s")
+        logger.info("ResponseHandler - got %s", msg)
         self._handlers[msg[2]](msg[1])
         del self._handlers[msg[2]]
-
-
-
-
-
-def test():
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect(('127.0.0.1', 36430))
-    c = SwankConnection(s)  
-    r = [sexpdata.Symbol('swank:connection-info')] 
-    def p(x):
-        print(x)
-    c.send(r, p)
 
