@@ -17,10 +17,34 @@ class Completer(object):
                 'words': [self._format_completion(comp) for comp in completions],
                 'refresh': 'always'}
 
+
+    def _format_call(self, call):
+        params = self._format_params(call)
+
+        return "(%s)" % params
+
+    def _format_calls(self, calls):
+        return "".join([self._format_call(call) for call in calls])
+
+    def _format_type_sig(self, sig):
+        # We expect type sig to a be a tuple with the list of calls and the return type
+        calls = self._format_calls(sig[0])
+        if len(sig[0]) == 0:
+            return "%s" % sig[1]
+        else:
+            return "%s: %s" % (calls, sig[1])
+
+
+    def _format_param(self, param):
+        return "%s: %s" % (param[0], param[1])
+
+    def _format_params(self, params):
+        return ", ".join([self._format_param(param) for param in params])
+
     def _format_completion(self, completion):
         return {
                 'word': completion["name"],
-                'menu': str(completion["type-sig"]),
+                'menu': self._format_type_sig(completion["type-sig"]),
                 'kind': 'f' if completion["is-callable"] else "m"
                 }
 

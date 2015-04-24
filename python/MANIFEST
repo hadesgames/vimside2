@@ -2,6 +2,7 @@
 setup.py
 vimside/__init__.py
 vimside/command.py
+vimside/completions.py
 vimside/env.py
 vimside/sexp.py
 vimside/rpc/SwankConnection.py
