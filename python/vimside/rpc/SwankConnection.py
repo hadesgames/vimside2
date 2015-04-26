@@ -76,7 +76,12 @@ class BaseSwankConnection(object):
 
     def _receive_incomming_msg(self):
         length = int(self._socket.recv(6), 16)
-        resp_str = self._socket.recv(length)
+
+        resp_str = ""
+        while length > 0:
+            chunk = self._socket.recv(length)
+            resp_str += chunk
+            length -= len(chunk)
 
         logger.debug("Received message %s", resp_str)
 
