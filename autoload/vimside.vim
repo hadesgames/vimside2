@@ -20,9 +20,11 @@ endfunction
 
 function! s:SetUpKeyBindings()
   nmap <silent> <Leader>vs :call vimside#command#server#StartEnsime()<CR>
+  nmap <silent> <Leader>vt :call vimside#command#typeinfo#StatusTypeInfo()<CR>
 
   augroup VIMSIDE_STOP
     au!
+    "autocmd CursorMoved * call vimside#command#typeinfo#StatusTypeInfo()
     autocmd VimLeave * call vimside#command#server#StopEnsime()
     " autocmd VimLeave scala call vimside#StopEnsime()
   augroup END
