@@ -26,6 +26,7 @@ function! s:SetUpKeyBindings()
     au!
     "autocmd CursorMoved * call vimside#command#typeinfo#StatusTypeInfo()
     autocmd VimLeave * call vimside#command#server#StopEnsime()
+    autocmd BufWritePost * call vimside#command#server#ReloadCurrentFile()
     " autocmd VimLeave scala call vimside#StopEnsime()
   augroup END
 endfunction

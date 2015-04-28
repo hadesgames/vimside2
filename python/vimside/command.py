@@ -130,3 +130,7 @@ def StopEnsime(env):
     except concurrent.futures.TimeoutError:
         env.ensime_process.kill()
 
+
+def ReloadFile(env, filename):
+    env.connection.responseFuture(vimside.rpc.typecheck_file(filename))
+    return 0

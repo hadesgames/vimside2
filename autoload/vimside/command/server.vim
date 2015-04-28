@@ -1,18 +1,23 @@
-function! vimside#command#server#StartEnsime()
 python << EOF
 import vimside.command
 import vimside.env
 
-vimside.command.StartEnsime(vimside.env.getEnv())
+env = vimside.env.getEnv()
+EOF
+
+function! vimside#command#server#StartEnsime()
+python << EOF
+vimside.command.StartEnsime(env)
 EOF
 endfunction
 
 function! vimside#command#server#StopEnsime()
 python << EOF
-import vimside.command
-import vimside.env
-
-vimside.command.StopEnsime(vimside.env.getEnv())
+vimside.command.StopEnsime(env)
 EOF
+endfunction
 
+function! vimside#command#server#ReloadCurrentFile()
+  let file = expand("%:p")
+  call pyeval('vimside.command.ReloadFile(env,"'. file .'")')
 endfunction

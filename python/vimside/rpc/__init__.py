@@ -34,3 +34,9 @@ def symbol_at_point(filename, offset):
             filename,
             offset 
            ]
+
+def typecheck_file(filename):
+    return [
+            Symbol("swank:typecheck-file"),
+            { "file": filename }
+           ]
