@@ -101,7 +101,7 @@ def _SetupConnection(env):
         port = int(f.read())
 
     socket = _SetupSocket(port)
-    env.set_connection(SwankConnection(socket))
+    env.initialize_connection(SwankConnection(socket))
 
 def _CreateCacheDir(env):
     if not os.path.exists(env.conf["cache-dir"]):
@@ -132,5 +132,6 @@ def StopEnsime(env):
 
 
 def ReloadFile(env, filename):
-    env.connection.responseFuture(vimside.rpc.typecheck_file(filename))
+    if env.is_ready():
+        env.connection.responseFuture(vimside.rpc.typecheck_file(filename))
     return 0

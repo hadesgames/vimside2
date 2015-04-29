@@ -6,6 +6,9 @@ def connection_info():
 def shutdown_server():
     return [Symbol("swank:shutdown-server")]
 
+def init_project(conf):
+    return [Symbol("swank:init-project"), conf]
+
 def completions(filename, offset, max_results=0, match_case=True, reload_file = True):
     return [
             Symbol("swank:completions"),
