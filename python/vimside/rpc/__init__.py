@@ -43,3 +43,21 @@ def typecheck_file(filename):
             Symbol("swank:typecheck-file"),
             { "file": filename }
            ]
+
+def import_suggestions(filename, offset):
+    return [
+            Symbol("swank:import-suggestions"),
+            filename,
+            offset,
+            ["Future"],
+            10
+           ]
+
+def prepare_refactor(_id, tpe, data, now):
+    return [
+            Symbol("swank:prepare-refactor"),
+            _id,
+            Symbol(tpe),
+            [Symbol("file"), data['file'], Symbol('qualifiedName'), data['qualifiedName']],
+            False
+           ]

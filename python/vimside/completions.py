@@ -48,5 +48,17 @@ class Completer(object):
                 'kind': 'f' if completion["is-callable"] else "m"
                 }
 
+    def get_import_suggestions(self, filename, offset):
+        msg = self._env.connection.responseFuture(rpc.import_suggestions(filename, offset)).result()["ok"]
+        if type(msg) != list:
+            return []
+
+        if len(msg) == 0:
+            return []
+
+        return [imp['name'] for imp in msg[0]]
+
+
+
 
 

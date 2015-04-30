@@ -21,6 +21,7 @@ endfunction
 function! s:SetUpKeyBindings()
   nmap <silent> <Leader>vs :call vimside#command#server#StartEnsime()<CR>
   nmap <silent> <Leader>vt :call vimside#command#typeinfo#StatusTypeInfo()<CR>
+  nmap <silent> <Leader>vi :call vimside#command#completion#SuggestImport()<CR>
 
   augroup VIMSIDE_STOP
     au!

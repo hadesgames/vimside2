@@ -1,6 +1,7 @@
 import vimside 
 import vimside.completions
 import vimside.typeinfo
+import vimside.refactor
 
 from vimside import rpc
 class VimsideEnv(object):
@@ -10,6 +11,7 @@ class VimsideEnv(object):
         self.ensime_process = None
         self.completions = vimside.completions.Completer(self)
         self.typeinfo = vimside.typeinfo.TypeInfo(self)
+        self.refactor = vimside.refactor.Refactor(self)
 
     def handle_connection_info(self, resp):
         msg = resp.result()
