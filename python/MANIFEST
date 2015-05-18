@@ -4,6 +4,7 @@ vimside/__init__.py
 vimside/command.py
 vimside/completions.py
 vimside/env.py
+vimside/refactor.py
 vimside/sexp.py
 vimside/typeinfo.py
 vimside/rpc/SwankConnection.py

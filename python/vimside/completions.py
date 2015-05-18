@@ -1,14 +1,26 @@
 import vimside.rpc as rpc
+from concurrent.futures import Future
+
 class Completer(object):
     def __init__(self, env):
         self._env = env
 
 
-    def get_completions(self, filename, offset):
+    def get_raw_completions(self, filename, offset):
         req = rpc.completions(filename, offset)
 
-        res = self._env.connection.responseFuture(req).result(5)["ok"]
-        res["completions"] = self._to_vim_format(res["completions"])
+        return self._env.connection.responseFuture(req)
+
+    def get_completions(self, filename, offset):
+        res = Future()
+
+        def format_response(ft):
+            resp = ft.result()["ok"]
+            resp["completions"] = self._to_vim_format(resp["completions"])
+
+            res.set_result(resp)
+
+        self.get_raw_completions(filename, offset).add_done_callback(format_response)
 
         return res
 
