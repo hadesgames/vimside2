@@ -7,10 +7,10 @@ LOGGER = vimside.logger.getLogger(__name__)
 class NoEnsimeConf(Exception):
     pass
 
-def locate_conf(_dir):
-    file_name = ".ensime"
+def locate_conf_dir(_dir):
+    filename = ".ensime"
     while _dir != "/":
-        conf = os.path.join(_dir, file_name)
+        conf = os.path.join(_dir, filename)
         LOGGER.debug("Checking %s", conf)
 
         if os.path.exists(conf):
@@ -20,6 +20,7 @@ def locate_conf(_dir):
 
     raise NoEnsimeConf
 
-def load_conf(filename):
+def load_conf_from_dir(_dir):
+    filename = os.path.join(_dir, ".ensime")
     with open(filename, "r") as conf:
         return vimside.sexp.load(conf)
