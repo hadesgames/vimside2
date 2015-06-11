@@ -1,9 +1,6 @@
 import unittest
-from mock import MagicMock
 from vimside.connection.swank import SwankConnection
-import Queue
 import sexpdata
-from time import sleep
 
 class MockSocket:
     def __init__(self, data):
@@ -24,7 +21,8 @@ class MockSocket:
 class TestSwankConnection(unittest.TestCase):
     def setUp(self):
         self._socket = MockSocket("000002()")
-        self._conn = SwankConnection(self._socket, spawn_read_thread=False, spawn_write_thread=False)
+        self._conn = SwankConnection(
+            self._socket, spawn_read_thread=False, spawn_write_thread=False)
 
     def tearDown(self):
         del self._conn
@@ -36,7 +34,7 @@ class TestSwankConnection(unittest.TestCase):
     def test_handlers(self):
         # Send Request
         req = [sexpdata.Symbol("swank:connection-info")]
-        ft = self._conn.responseFuture(req)
+        ft = self._conn.response_ft(req)
         self._conn._send_next_msg()
 
         # Send Response
