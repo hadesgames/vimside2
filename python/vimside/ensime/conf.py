@@ -14,7 +14,7 @@ def locate_conf_dir(_dir):
         LOGGER.debug("Checking %s", conf)
 
         if os.path.exists(conf):
-            return conf
+            return _dir
 
         _dir = os.path.dirname(_dir)
 
