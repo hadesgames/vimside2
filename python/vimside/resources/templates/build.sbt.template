@@ -1,0 +1,24 @@
+import sbt._
+import IO._
+import java.io._
+
+scalaVersion := "_scala_version_"
+
+ivyScala := ivyScala.value map { _.copy(overrideScalaVersion = true) }
+
+resolvers += Resolver.sonatypeRepo("snapshots")
+
+resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
+
+resolvers += "Akka Repo" at "http://repo.akka.io/repository"
+
+libraryDependencies += "org.ensime" %% "ensime" % "_server_version_"
+
+val saveClasspathTask = TaskKey[Unit]("saveClasspath", "Save the classpath to a file")
+
+saveClasspathTask := {
+  val managed = (managedClasspath in Runtime).value.map(_.data.getAbsolutePath)
+  val unmanaged = (unmanagedClasspath in Runtime).value.map(_.data.getAbsolutePath)
+  val out = file("_classpath_file_")
+  write(out, (unmanaged ++ managed).mkString(File.pathSeparator))
+}

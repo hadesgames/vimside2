@@ -20,7 +20,10 @@ def locate_conf_dir(_dir):
 
     raise NoEnsimeConf
 
+def conf_from_dir(_dir):
+    return os.path.join(_dir, ".ensime")
+
 def load_conf_from_dir(_dir):
-    filename = os.path.join(_dir, ".ensime")
+    filename = conf_from_dir(_dir)
     with open(filename, "r") as conf:
         return vimside.sexp.load(conf)
