@@ -2,9 +2,11 @@ import vimside.logger
 from vimside.ensime.conf import locate_conf_dir, load_conf_from_dir, conf_from_dir
 from vimside.ensime.command import start_command
 
+import concurrent.futures
 import os
 import socket
 import subprocess
+import time
 
 LOGGER = vimside.logger.getLogger(__name__)
 
@@ -14,6 +16,7 @@ class EnsimeManager(object):
         self.ensime_process = None
         self.reload_conf()
 
+    executor = concurrent.futures.ThreadPoolExecutor(max_workers=5)
     @classmethod
     def from_path(cls, path):
         return EnsimeManager(locate_conf_dir(path))
@@ -43,10 +46,17 @@ class EnsimeManager(object):
 
         return sock
 
+    def wait_for_start(self):
+        while not self.is_active():
+            time.sleep(0.2)
+
     def start(self):
         cmd = start_command(self.conf_path())
         with open("/tmp/ENSIME_LOG", "a") as fh:
             self.ensime_process = subprocess.Popen(cmd, stdout=fh, stderr=fh)
+        return self.executor.submit(self.wait_for_start)
+
+
 
     def stop(self):
         # TODO wait for terminate else kill

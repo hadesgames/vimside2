@@ -24,6 +24,7 @@
     #def is_ready(self):
         #return self.connection is not None
 import vimside.logger
+import vimside.rpc as rpc
 from vimside.ensime.manager import EnsimeManager
 from vimside.connection.ensime import EnsimeConnection
 
@@ -41,14 +42,14 @@ class VimsideEnv(object):
         manager = EnsimeManager.from_path(path)
         path = manager.conf_path()
 
-        if not path in envs:
-            envs[path] = VimsideEnv(manager)
+        if not path in cls.envs:
+            cls.envs[path] = VimsideEnv(manager)
 
-        return envs[path]
+        return cls.envs[path]
 
     def _initialize_env(self):
         if not self._ensime.is_active():
-            self._ensime.start()
+            self._ensime.start().result(5)
 
         self._conn = EnsimeConnection(self._ensime.get_socket())
 
