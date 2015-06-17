@@ -1,38 +1,59 @@
-import vimside 
-import vimside.completions
-import vimside.typeinfo
-import vimside.refactor
+#class VimsideEnv(object):
+    #def __init__(self):
+        #self.connection = None
+        #self.conf = {}
+        #self.ensime_process = None
+        #self.completions = vimside.completions.Completer(self)
+        #self.typeinfo = vimside.typeinfo.TypeInfo(self)
+        #self.refactor = vimside.refactor.Refactor(self)
 
-from vimside import rpc
+    #def handle_connection_info(self, resp):
+        #msg = resp.result()
+        #msg = msg['ok']
+
+        #print("Initialized %s %s" % (msg["implementation"]["name"], msg["version"]))
+
+    #def initialize_connection(self, connection):
+        #self.connection = connection
+
+        #self.connection.responseFuture(rpc.connection_info()).add_done_callback(
+                #self.handle_connection_info)
+        #self.connection.responseFuture(rpc.init_project(self.conf))
+
+
+    #def is_ready(self):
+        #return self.connection is not None
+import vimside.logger
+from vimside.ensime.manager import EnsimeManager
+from vimside.connection.ensime import EnsimeConnection
+
+LOGGER = vimside.logger.getLogger(__name__)
+
 class VimsideEnv(object):
-    def __init__(self):
-        self.connection = None
-        self.conf = {}
-        self.ensime_process = None
-        self.completions = vimside.completions.Completer(self)
-        self.typeinfo = vimside.typeinfo.TypeInfo(self)
-        self.refactor = vimside.refactor.Refactor(self)
+    def __init__(self, manager):
+        self._ensime = manager
+        self._initialize_env()
+        pass
 
-    def handle_connection_info(self, resp):
-        msg = resp.result()
-        msg = msg['ok']
+    envs = {}
+    @classmethod
+    def from_path(cls, path):
+        manager = EnsimeManager.from_path(path)
+        path = manager.conf_path()
 
-        print("Initialized %s %s" % (msg["implementation"]["name"], msg["version"]))
+        if not path in envs:
+            envs[path] = VimsideEnv(manager)
 
-    def initialize_connection(self, connection):
-        self.connection = connection
+        return envs[path]
 
-        self.connection.responseFuture(rpc.connection_info()).add_done_callback(
-                self.handle_connection_info)
-        self.connection.responseFuture(rpc.init_project(self.conf))
+    def _initialize_env(self):
+        if not self._ensime.is_active():
+            self._ensime.start()
 
+        self._conn = EnsimeConnection(self._ensime.get_socket())
 
-    def is_ready(self):
-        return self.connection is not None
+        self._initialize_connection()
 
-global_env = VimsideEnv()
-
-def getEnv():
-    return global_env
-
-
+    def _initialize_connection(self):
+        self._conn.response_ft(rpc.connection_info()).result(5)
+        self._conn.send(rpc.init_project(self._ensime.conf))
