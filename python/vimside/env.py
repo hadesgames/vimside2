@@ -1,29 +1,5 @@
-#class VimsideEnv(object):
-    #def __init__(self):
-        #self.connection = None
-        #self.conf = {}
-        #self.ensime_process = None
-        #self.completions = vimside.completions.Completer(self)
-        #self.typeinfo = vimside.typeinfo.TypeInfo(self)
-        #self.refactor = vimside.refactor.Refactor(self)
-
-    #def handle_connection_info(self, resp):
-        #msg = resp.result()
-        #msg = msg['ok']
-
-        #print("Initialized %s %s" % (msg["implementation"]["name"], msg["version"]))
-
-    #def initialize_connection(self, connection):
-        #self.connection = connection
-
-        #self.connection.responseFuture(rpc.connection_info()).add_done_callback(
-                #self.handle_connection_info)
-        #self.connection.responseFuture(rpc.init_project(self.conf))
-
-
-    #def is_ready(self):
-        #return self.connection is not None
 import vimside.logger
+import vimside.notes
 import vimside.rpc as rpc
 from vimside.ensime.manager import EnsimeManager
 from vimside.connection.ensime import EnsimeConnection
@@ -33,6 +9,8 @@ LOGGER = vimside.logger.getLogger(__name__)
 class VimsideEnv(object):
     def __init__(self, manager):
         self._ensime = manager
+        self._scala_notes = vimside.notes.Notes("scala")
+        self._java_notes = vimside.notes.Notes("java")
         self._initialize_env()
         pass
 
@@ -53,8 +31,14 @@ class VimsideEnv(object):
 
         self._conn = EnsimeConnection(self._ensime.get_socket())
 
+        self._setup_components()
         self._initialize_connection()
 
     def _initialize_connection(self):
         self._conn.response_ft(rpc.connection_info()).result(5)
-        self._conn.send(rpc.init_project(self._ensime.conf))
+        self._conn.response_ft(rpc.init_project(self._ensime.conf)).result(5)
+
+    def _setup_components(self):
+        self._scala_notes.setup(self._conn)
+        self._java_notes.setup(self._conn)
+

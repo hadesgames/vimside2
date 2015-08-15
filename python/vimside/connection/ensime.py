@@ -18,7 +18,7 @@ class EnsimeConnection(SwankConnection):
 
 
     def events(self, name):
-        return self.events.filter(
+        return self._events.filter(
             lambda event: self.is_event_with_name(event, name))
 
 

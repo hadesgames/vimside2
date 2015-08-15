@@ -1,6 +1,6 @@
 package org.example
 
 object Hello extends App {
-  val s = "hello"
+  val s = "hello
   println("Hello, hello")
 }
