@@ -14,7 +14,14 @@ function! s:SetUpPython()
 
   py import vimside.env
   py import vimside.command
-  exe 'python vimside.env.getEnv().cwd="' . getcwd() . '"'
+
+  call s:SetUpEnv()
+
+endfunction
+
+function! s:SetUpEnv()
+  "exe 'python vimside.env.getEnv().cwd="' . getcwd() . '"'
+
 endfunction
 
 
